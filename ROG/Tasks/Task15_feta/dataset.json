@@ -1,0 +1,32 @@
+{
+    "mean_size": [
+        256.0,
+        256.0,
+        160.0
+    ],
+    "small_size": [
+        44.0,
+        45.0,
+        61.0
+    ],
+    "volume_small": 25044.0,
+    "big_size": [
+        119.0,
+        147.0,
+        101.0
+    ],
+    "volume_big": 524335.0,
+    "modality": {
+        "0": "T2"
+    },
+    "labels": {
+        "0": "background",
+        "1": "Cerebrospinal fluid",
+        "2": "Grey Matter",
+        "3": "White Matter",
+        "4": "Ventricles",
+        "5": "Cerebellum",
+        "6": "Deep Grey Matter",
+        "7": "Brainstem"
+    }
+}

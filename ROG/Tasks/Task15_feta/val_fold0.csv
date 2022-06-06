@@ -1,0 +1,11 @@
+image,label
+imagesTr/sub-001_rec-mial_T2w.nii.gz,labelsTr/sub-001_rec-mial_T2w.nii.gz
+imagesTr/sub-005_rec-mial_T2w.nii.gz,labelsTr/sub-005_rec-mial_T2w.nii.gz
+imagesTr/sub-020_rec-mial_T2w.nii.gz,labelsTr/sub-020_rec-mial_T2w.nii.gz
+imagesTr/sub-029_rec-mial_T2w.nii.gz,labelsTr/sub-029_rec-mial_T2w.nii.gz
+imagesTr/sub-037_rec-mial_T2w.nii.gz,labelsTr/sub-037_rec-mial_T2w.nii.gz
+imagesTr/sub-038_rec-mial_T2w.nii.gz,labelsTr/sub-038_rec-mial_T2w.nii.gz
+imagesTr/sub-052_rec-mial_T2w.nii.gz,labelsTr/sub-052_rec-mial_T2w.nii.gz
+imagesTr/sub-070_rec-mial_T2w.nii.gz,labelsTr/sub-070_rec-mial_T2w.nii.gz
+imagesTr/sub-075_rec-mial_T2w.nii.gz,labelsTr/sub-075_rec-mial_T2w.nii.gz
+imagesTr/sub-077_rec-mial_T2w.nii.gz,labelsTr/sub-077_rec-mial_T2w.nii.gz
