@@ -156,9 +156,11 @@ def test(gpu=0,demo=False):
         dice_score=0
         tissues=np.zeros(7)
 
+
         for i in tqdm(range(volumen.shape[0])):
 
             pred = volumen[i, :, :, :]
+
             pred = torch.as_tensor(np.array([pred]))
             gt = S1[i, :, :]
             gt = torch.as_tensor(np.array([gt]), dtype=torch.long)
@@ -168,6 +170,15 @@ def test(gpu=0,demo=False):
                                     reduce_batch_first=False)
             dice_score += m[0].item()
             tissues += m[1]
+
+        if demo:
+            ## save the pred with PIL
+            pred_ex = volumen[90,:,:,:]
+            pred_ex = np.array(pred_ex)
+            print('pred_ex', pred_ex.shape,pred_ex.dtype,type(pred_ex))
+            pred_ex = pred_ex.argmax(axis=2)
+            im = Image.fromarray(pred_ex.astype(np.uint8)*36)
+            im.save(f'Results/unet2D/pred90.png')
 
         print(f'Average Dice Score: {dice_score / volumen.shape[2]}')
         print(f'Average Tissue Dice Score: {tissues/volumen.shape[2]}')

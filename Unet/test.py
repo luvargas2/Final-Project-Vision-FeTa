@@ -92,7 +92,7 @@ def evaluate(net, img, mask, device, axis):
     return volumen
 
 
-def test(volumen,mask):
+def test(volumen,mask,demo =False):
 
     dice_score=0
     tissues=np.zeros(7)
@@ -107,6 +107,15 @@ def test(volumen,mask):
                                             reduce_batch_first=False)
         dice_score += m[0]
         tissues+=m[1]
+    if demo:
+        ## save the pred with PIL
+        pred_ex = volumen[:,:,90,:]
+        pred_ex = np.array(pred_ex)
+        print('pred_ex', pred_ex.shape,pred_ex.dtype,type(pred_ex))
+        pred_ex = pred_ex.argmax(axis=2)
+        im = Image.fromarray(pred_ex.astype(np.uint8)*36)
+        im.save(f'Results/unet2.5D/pred90.png')
+
     mean_dice = dice_score/volumen.shape[2]
     class_dice = tissues/volumen.shape[2]
 

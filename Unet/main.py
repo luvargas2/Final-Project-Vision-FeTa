@@ -23,12 +23,13 @@ from dataloader.dataloader import FeTa_data
 import test
 import testUnet2D
 
+
 def main(args):
     print(f'-----Running FeTA Multi-tissue segmentation model on device {args.gpu}-----')
     experiment = args.experiment
 
     # PATHS AND DIRS
-    args.save_path = os.path.join('Results',args.name)
+    args.save_path = os.path.join('Results',args.nameUnet)
     os.makedirs(args.save_path, exist_ok=True)
 
     if experiment == 'unet2D':
@@ -104,7 +105,10 @@ def main(args):
 
             # TEST
             print('Testing...')
-            mean_dice, class_dice = test.test(VolTotal,S1)
+            if args.mode == 'demo':
+                mean_dice, class_dice = test.test(VolTotal,S1,demo=True)
+            else:
+                mean_dice, class_dice = test.test(VolTotal,S1)
             avg_dice.append(mean_dice)
             avg_class_dice+=class_dice
 
@@ -122,6 +126,8 @@ def main(args):
     return
 
 if __name__ == '__main__':
+
+    #---------UNET---------------
     # SET THE PARAMETERS
     parser = argparse.ArgumentParser()
     # EXPERIMENT DETAILS
@@ -129,17 +135,14 @@ if __name__ == '__main__':
                         help='mode to test/demo (default: demo)')
     parser.add_argument('--experiment', type=str, default='unet25D',choices = ['unet2D','unet25D','ROG'],
                         help='mode to test/demo (default: demo)')
-    parser.add_argument('--name', type=str, default='unet2.5D',
+    parser.add_argument('--nameUnet', type=str, default='unet2.5D',
                         help='Name of the current experiment (default: unet2.5D)')
-    parser.add_argument('--test', action='store_false', default=True,
+    parser.add_argument('--testUnet', action='store_false', default=True,
                         help='Evaluate a model')
-    parser.add_argument('--load_model', type=str, default='best_dice',
-                        help='Weights to load (default: best_dice)')
-    parser.add_argument('--pretrained', type=str, default=None,
-                        help='Name of the folder with the pretrained model')
     parser.add_argument('--gpu', type=str, default='0',
                         help='GPU(s) to use (default: 0)')
     args = parser.parse_args()
+    
 
     main(args)
 
