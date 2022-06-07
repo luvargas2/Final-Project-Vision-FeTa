@@ -109,6 +109,26 @@ def test(volumen,mask):
         tissues+=m[1]
     mean_dice = dice_score/volumen.shape[2]
     class_dice = tissues/volumen.shape[2]
-   
+
     return mean_dice, class_dice
+
+def evaluate_patch(net, dataloader, mask, device):
+    net.eval()
+    dice_score = 0
+    # iterate over the validation set
+    image=dataloader
+
+    image = cv2.resize(image, (64, 64))
+    # move images and labels to correct device and type
+    image = torch.as_tensor(np.array([[image]])).float()
+    image = image.to(device=device, dtype=torch.float32)
+
+    with torch.no_grad():
+        # predict the mask
+        mask_pred = net(image)
+        mask_pred=cv2.resize(dimensiones(mask_pred.cpu().numpy()[0, :, :, :]), (128, 128))
+
+    net.train()
+    
+    return mask_pred
 

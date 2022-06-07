@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from this import d
 import time
 import numpy as np
 import pandas as pd
@@ -97,13 +98,19 @@ def val(args, model, loader, criterion, metrics, rank):
     return epoch_loss.avg, dice
 
 
-def test(info, model, loader, images_path, test_file, rank, world_size):
+def test(info, model, loader, images_path, test_file, rank, world_size,demo=False):
     '''
     The inference is done by uniformly extracting patches of the images.
     The patches migth overlap, so we perform a weigthed average based on
     the distance of each voxel to the center of their corresponding patch.
     '''
     patients = pd.read_csv(test_file)
+
+    if demo:
+        patients = patients.iloc[3]
+    else:
+        patients = pd.read_csv(test_file)
+
     model.eval()
 
     # Add more weight to the central voxels
@@ -115,6 +122,9 @@ def test(info, model, loader, images_path, test_file, rank, world_size):
     w_patch = torch.Tensor(w_patch / w_patch.max()).to(rank).half()
 
     for idx in range(rank, len(patients), world_size):
+        if demo:
+            idx = 3
+
         shape, name, affine, pad = loader.dataset.update(idx)
         prediction = torch.zeros((info['classes'],) + shape).to(rank).half()
         weights = torch.zeros(shape).to(rank).half()
@@ -142,3 +152,6 @@ def test(info, model, loader, images_path, test_file, rank, world_size):
         helpers.save_image(
             prediction, os.path.join(images_path, name), affine)
         print('Prediction {} saved'.format(name))
+
+        if demo and idx==3:
+            break

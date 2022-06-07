@@ -65,7 +65,7 @@ def main(rank, world_size, args):
     # PATHS AND DIRS
     args.save_path = os.path.join(
         info['output_folder'], args.name, f'fold_{args.fold}')
-    images_path = os.path.join(args.save_path, 'volumes_val')
+    images_path = os.path.join(args.save_path, 'volumes')
     if args.adv:
         adv_path = os.path.join(args.save_path, 'autoattack')
         os.makedirs(adv_path, exist_ok=True)
@@ -162,7 +162,7 @@ def main(rank, world_size, args):
     val_dataset = dataloader.Medical_data(
         True, info['val_file'], info['root'], info['val_size'], val=True)
     test_dataset = dataloader.Medical_data(
-        False, info['val_file'], info['root'], info['val_size'])
+        False, info['test_file'], info['root'], info['val_size'])
 
     # SAMPLERS
     train_sampler = torch.utils.data.distributed.DistributedSampler(
@@ -281,14 +281,28 @@ def main(rank, world_size, args):
         _ = adversary.run_standard_evaluation_individual(bs=info['test_batch'])
     else:
         # EVALUATE THE MODEL
-        trainer.test(
-            info, ddp_model, test_loader, images_path,
-            info['val_file'], rank, world_size)
-        dist.barrier()
+        if args.mode == 'demo':
+            print('Running demo')
+            trainer.test(
+                info, ddp_model, test_loader, images_path,
+                info['test_file'], rank, world_size,demo=True)     
+            dist.barrier()
+        else:
+            trainer.test(
+                info, ddp_model, test_loader, images_path,
+                info['test_file'], rank, world_size)
+            dist.barrier()
+
         # CALCULATE THE FINAL METRICS
         #if rank == 0:
         test.test(
-            images_path, info['root'], info['val_file'], info['classes'])
+            images_path, info['root'], info['test_file'], info['classes'])
+
+
+
+
+
+        
     cleanup()
 
 
@@ -296,9 +310,9 @@ if __name__ == '__main__':
     # SET THE PARAMETERS
     parser = argparse.ArgumentParser()
     # EXPERIMENT DETAILS
-    parser.add_argument('--task', type=str, default='4',
-                        help='Task to train/evaluate (default: 4)')
-    parser.add_argument('--name', type=str, default='ROG',
+    parser.add_argument('--task', type=str, default='15',
+                        help='Task to train/evaluate (default: )')
+    parser.add_argument('--name', type=str, default='ROGdemo',
                         help='Name of the current experiment (default: ROG)')
     parser.add_argument('--AT', action='store_true', default=False,
                         help='Train a model with Free AT')
@@ -333,6 +347,9 @@ if __name__ == '__main__':
                         help='Number of iterations for AutoAttack')
     parser.add_argument('--adv', action='store_true', default=False,
                         help='Evaluate a model\'s robustness')
+    
+    parser.add_argument('--mode', type=str, default='test',choices = ['demo', 'test'],
+                        help='mode to test/demo (default: demo)')
 
     parser.add_argument('--gpu', type=str, default='0',
                         help='GPU(s) to use (default: 0)')

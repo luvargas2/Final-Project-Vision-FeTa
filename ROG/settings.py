@@ -78,10 +78,10 @@ def plan_experiment(task, batch, patience, fold, rank):
         'patience': patience,  # Make it dependent on the data?
         'seed': 12345,
         'output_folder': os.path.join('Results', task),
-        'root': os.path.join('/home/lfvargas10/ProyectoVision/Data/rogPrueba', task),
-        'train_file': '/home/lfvargas10/ProyectoVision/ROG/Tasks/Task15_feta/train_fold0.csv',
-        'val_file': '/home/lfvargas10/ProyectoVision/ROG/Tasks/Task15_feta/val_fold0.csv',
-        'test_file': '/home/lfvargas10/ProyectoVision/ROG/Tasks/Task15_feta/test_paths.csv'
+        'root': os.path.join('/home/lfvargas10/Final-Project-Vision-FeTa/Data/rogPrueba', task),
+        'train_file': '/home/lfvargas10/Final-Project-Vision-FeTa/ROG/Tasks/Task15_feta/train_fold0.csv',
+        'val_file': '/home/lfvargas10/Final-Project-Vision-FeTa/ROG/Tasks/Task15_feta/val_fold0.csv',
+        'test_file': '/home/lfvargas10/Final-Project-Vision-FeTa/ROG/Tasks/Task15_feta/test_paths.csv'
         # 'test_file': os.path.join('Tasks', task, 'test_paths.csv')
     }
 

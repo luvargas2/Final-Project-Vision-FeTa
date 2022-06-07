@@ -21,6 +21,7 @@ from utils.dice_score import multiclass_dice_coeff, dice_coeff
 from unet import UNet
 from dataloader.dataloader import FeTa_data
 import test
+import testUnet2D
 
 def main(args):
     print(f'-----Running FeTA Multi-tissue segmentation model on device {args.gpu}-----')
@@ -36,11 +37,14 @@ def main(args):
         device = torch.device('cuda:%d' % int(args.gpu))
         net1.load_state_dict(torch.load(os.path.join('models', 'unet2Dalbcortes24.pth'),map_location=device))
         net1.to(device=device)
-        # DATASETS
-        test_dataset = FeTa_data('axis1patches.csv','data/testpatches',patches=True)
-        weight_matrix = test.create_matrix()
 
+        ##TEST/DEMO
 
+        if args.mode=='demo':
+            testUnet2D.test(int(args.gpu),demo=True)
+        else:
+            testUnet2D.test(int(args.gpu))
+  
        
     elif experiment == 'unet25D':
         # CREATE THE NETWORK ARCHITECTURE
@@ -65,13 +69,17 @@ def main(args):
         test_dataset_3 = FeTa_data('axis3.csv',root_dir='data/testdata')
 
         # VOLUMES
-        patients = test_dataset_1.get_patients()
         I1, S1 = np.zeros((256, 256, 256)), np.zeros((256, 256, 256))
         I2, S2 = np.zeros((256, 256, 256)), np.zeros((256, 256, 256))
         I3, S3 = np.zeros((256, 256, 256)), np.zeros((256, 256, 256))
         
         avg_dice =[]
         avg_class_dice = np.zeros(7)
+            
+        if args.mode=='demo':
+            patients =['27']
+        else:
+            patients = test_dataset_1.get_patients()
 
         for patient in patients:
             print(f'Processing patient {patient}')
@@ -117,7 +125,7 @@ if __name__ == '__main__':
     # SET THE PARAMETERS
     parser = argparse.ArgumentParser()
     # EXPERIMENT DETAILS
-    parser.add_argument('--mode', type=str, default='demo',choices = ['demo', 'test'],
+    parser.add_argument('--mode', type=str, default='test',choices = ['demo', 'test'],
                         help='mode to test/demo (default: demo)')
     parser.add_argument('--experiment', type=str, default='unet25D',choices = ['unet2D','unet25D','ROG'],
                         help='mode to test/demo (default: demo)')
